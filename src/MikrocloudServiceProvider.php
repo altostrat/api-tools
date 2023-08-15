@@ -2,6 +2,7 @@
 
 namespace Mikrocloud\Mikrocloud;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class MikrocloudServiceProvider extends ServiceProvider
@@ -13,7 +14,9 @@ class MikrocloudServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $this->registerRoutes();
+        $this->registerCommands();
+
     }
 
     /**
@@ -24,8 +27,6 @@ class MikrocloudServiceProvider extends ServiceProvider
     public function register()
     {
         $this->configure();
-        $this->registerRoutes();
-        $this->registerCommands();
     }
 
     /**
@@ -35,7 +36,9 @@ class MikrocloudServiceProvider extends ServiceProvider
      */
     protected function configure()
     {
-        //
+        $this->mergeConfigFrom(
+            __DIR__ . '/../config/mikrocloud.php', 'mikrocloud'
+        );
     }
 
     /**
@@ -45,7 +48,13 @@ class MikrocloudServiceProvider extends ServiceProvider
      */
     protected function registerRoutes()
     {
-        //
+        Route::group([
+            'prefix' => config('mikrocloud.key'),
+            'namespace' => 'Mikrocloud\Mikrocloud\Http\Controllers',
+            'as' => 'mikrocloud.',
+        ], function () {
+            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+        });
     }
 
     /**
