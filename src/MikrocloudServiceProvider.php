@@ -20,7 +20,8 @@ class MikrocloudServiceProvider extends ServiceProvider
         $this->registerRoutes();
         $this->registerCommands();
         $this->registerMiddleware();
-        // $this->registerLogger(); WIP
+        // $this->registerLogger();
+        $this->registerPublishing();
 
     }
 
@@ -58,6 +59,18 @@ class MikrocloudServiceProvider extends ServiceProvider
         ], function () {
             $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         });
+
+        $routes_file = app()->basePath('routes/authenticated.php');
+
+        if (file_exists($routes_file)) {
+            Route::group([
+                'prefix' => config('mikrocloud.api_prefix'),
+                'as' => 'mikrocloud.',
+                'middleware' => 'mikrocloud',
+            ], function () {
+                $this->loadRoutesFrom($this->app->basePath('routes/authenticated.php'));
+            });
+        }
     }
 
     /**
@@ -81,6 +94,21 @@ class MikrocloudServiceProvider extends ServiceProvider
         //        $logManager->extend('stack', function ($app, array $config) {
         //            return new LogEater($config['level'] ?? 'debug');
         //        });
+    }
+
+    /**
+     * Register the package's publishable resources.
+     *
+     * @return void
+     */
+    protected function registerPublishing()
+    {
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../routes/authenticated.php' => $this->app->basePath('routes/authenticated.php'),
+            ], 'mikrocloud-routes');
+
+        }
     }
 
     protected function registerMiddleware(): void

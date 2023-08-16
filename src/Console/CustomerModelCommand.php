@@ -68,5 +68,17 @@ class CustomerModelCommand extends Command
                 $this->info('php artisan vapor:install ran successfully');
             }
         }
+
+        // if routes/authenticated.php does not exist in the laravel app, create it
+        $routes_file = app()->basePath('routes/authenticated.php');
+
+        if (! file_exists($routes_file)) {
+            $this->info('Creating routes/authenticated.php...');
+            $this->call('vendor:publish', [
+                '--tag' => 'mikrocloud-routes',
+                '--force' => true,
+            ]);
+            $this->info('routes/authenticated.php created successfully');
+        }
     }
 }

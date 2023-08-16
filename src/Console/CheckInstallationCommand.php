@@ -14,6 +14,7 @@ class CheckInstallationCommand extends Command
     {
 
         $customerModel = config('mikrocloud.customer_model');
+
         if (! class_exists($customerModel)) {
             $this->error('The customer model does not exist');
 
@@ -34,6 +35,20 @@ class CheckInstallationCommand extends Command
 
         if (! config('mikrocloud.auth0.cookie_secret')) {
             $this->error('The AUTH0_COOKIE_SECRET environment variable is not set');
+
+            return;
+        }
+
+        if (config('mikrocloud.api_prefix') === 'api') {
+            $this->error('The API_PREFIX environment variable is not set');
+
+            return;
+        }
+
+        $routes_file = app()->basePath('routes/authenticated.php');
+
+        if (! file_exists($routes_file)) {
+            $this->error('The routes/authenticated.php file does not exist');
 
             return;
         }

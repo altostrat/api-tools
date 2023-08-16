@@ -14,4 +14,5 @@ return [
         'cookie_secret' => env('AUTH0_COOKIE_SECRET'),
     ],
     'customer_model' => env('MIKROCLOUD_CUSTOMER_MODEL', 'App\Models\Customer'),
+    'api_prefix' => env('API_PREFIX', 'api'),
 ];
