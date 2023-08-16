@@ -13,4 +13,5 @@ return [
         'domain' => env('AUTH0_DOMAIN', 'auth.mikrocloud.com'),
         'cookie_secret' => env('AUTH0_COOKIE_SECRET'),
     ],
+    'customer_model' => env('MIKROCLOUD_CUSTOMER_MODEL', 'App\Models\Customer'),
 ];

@@ -25,11 +25,14 @@ class CustomerModelCommand extends Command
      */
     public function handle()
     {
+        $customerModel = config('mikrocloud.customer_model');
+        $customerModel = str_replace('App', '', $customerModel);
+        $customerModel = str_replace('\\', '/', $customerModel);
 
-        $model = __DIR__.'/Models/CustomerModel.php';
+        $model = __DIR__.$customerModel.'Model.php';
         $model = str_replace('/src/Console/', '/src/', $model);
 
-        $destination = app_path('Models/Customer.php');
+        $destination = app_path($customerModel.'.php');
 
         if (file_exists($destination)) {
             $this->error('Customer model already exists in '.$destination);
