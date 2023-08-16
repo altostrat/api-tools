@@ -4,6 +4,7 @@ namespace Mikrocloud\Mikrocloud;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Mikrocloud\Mikrocloud\Http\Middleware\Auth0Users;
 
 class MikrocloudServiceProvider extends ServiceProvider
 {
@@ -16,6 +17,8 @@ class MikrocloudServiceProvider extends ServiceProvider
     {
         $this->registerRoutes();
         $this->registerCommands();
+        $this->registerMiddleware();
+        // $this->registerLogger(); WIP
 
     }
 
@@ -37,7 +40,7 @@ class MikrocloudServiceProvider extends ServiceProvider
     protected function configure()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/mikrocloud.php', 'mikrocloud'
+            __DIR__.'/../config/mikrocloud.php', 'mikrocloud'
         );
     }
 
@@ -53,7 +56,7 @@ class MikrocloudServiceProvider extends ServiceProvider
             'namespace' => 'Mikrocloud\Mikrocloud\Http\Controllers',
             'as' => 'mikrocloud.',
         ], function () {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+            $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         });
     }
 
@@ -67,5 +70,18 @@ class MikrocloudServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             //
         }
+    }
+
+    protected function registerLogger()
+    {
+        //        $logManager = $this->app->make('log');
+        //        $logManager->extend('stack', function ($app, array $config) {
+        //            return new LogEater($config['level'] ?? 'debug');
+        //        });
+    }
+
+    protected function registerMiddleware(): void
+    {
+        $this->app['router']->aliasMiddleware('mikrocloud', Auth0Users::class);
     }
 }
