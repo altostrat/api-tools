@@ -2,12 +2,12 @@
 
 namespace Mikrocloud\Mikrocloud\Http\Middleware;
 
+use App\Models\Customer;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Token;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Mikrocloud\Mikrocloud\Models\Customer;
 
 class Auth0Users
 {
@@ -41,7 +41,7 @@ class Auth0Users
 
         abort_unless($customer_id, 401, 'Customer ID not found in token');
 
-        app()->bind('Mikrocloud\Mikrocloud\Models\Customer', function () use ($customer_id) {
+        app()->bind('App\Models\Customer', function () use ($customer_id) {
             return new Customer($customer_id);
         });
 
@@ -51,7 +51,7 @@ class Auth0Users
                 return ! is_null($value);
             })->toArray();
 
-        auth()->login(app('Mikrocloud\Mikrocloud\Models\Customer')->setRawAttributes($claims));
+        auth()->login(app('App\Models\Customer')->setRawAttributes($claims));
 
         $request->headers->set('Accept', 'application/json');
         $request->headers->set('Content-Type', 'application/json');

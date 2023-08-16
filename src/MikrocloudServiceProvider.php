@@ -4,6 +4,7 @@ namespace Mikrocloud\Mikrocloud;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
+use Mikrocloud\Mikrocloud\Console\CustomerModelCommand;
 use Mikrocloud\Mikrocloud\Http\Middleware\Auth0Users;
 
 class MikrocloudServiceProvider extends ServiceProvider
@@ -11,10 +12,11 @@ class MikrocloudServiceProvider extends ServiceProvider
     /**
      * Bootstrap any package services.
      *
-     * @return void
+     * @throws \Exception
      */
-    public function boot()
+    public function boot(): void
     {
+        $this->checkInstallation();
         $this->registerRoutes();
         $this->registerCommands();
         $this->registerMiddleware();
@@ -24,10 +26,8 @@ class MikrocloudServiceProvider extends ServiceProvider
 
     /**
      * Register any application services.
-     *
-     * @return void
      */
-    public function register()
+    public function register(): void
     {
         $this->configure();
     }
@@ -68,7 +68,9 @@ class MikrocloudServiceProvider extends ServiceProvider
     protected function registerCommands()
     {
         if ($this->app->runningInConsole()) {
-            //
+            $this->commands([
+                CustomerModelCommand::class,
+            ]);
         }
     }
 
@@ -83,5 +85,17 @@ class MikrocloudServiceProvider extends ServiceProvider
     protected function registerMiddleware(): void
     {
         $this->app['router']->aliasMiddleware('mikrocloud', Auth0Users::class);
+    }
+
+    /**
+     * Check if MikroCloud is installed.
+     *
+     * @throws \Exception
+     */
+    protected function checkInstallation(): void
+    {
+        if (! file_exists(app_path('Models/Customer.php'))) {
+            throw new \Exception('MikroCloud is not installed. Please run "php artisan mikrocloud:install"');
+        }
     }
 }
