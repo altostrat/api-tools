@@ -65,7 +65,7 @@ class MikrocloudServiceProvider extends ServiceProvider
         if (file_exists($routes_file)) {
             Route::group([
                 'prefix' => config('mikrocloud.api_prefix'),
-                'as' => 'mikrocloud.',
+                'as' => 'auth0.',
                 'middleware' => 'mikrocloud',
             ], function () {
                 $this->loadRoutesFrom($this->app->basePath('routes/authenticated.php'));
