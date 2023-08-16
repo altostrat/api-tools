@@ -35,13 +35,38 @@ class CustomerModelCommand extends Command
         $destination = app_path($customerModel.'.php');
 
         if (file_exists($destination)) {
-            $this->error('Customer model already exists in '.$destination);
+            $this->warn('Customer model already exists in '.$destination);
 
-            return;
+        } else {
+            copy($model, $destination);
+
+            $this->info('Customer model installed successfully in '.$destination);
         }
 
-        copy($model, $destination);
+        if ($this->confirm('Do you want to install the laravel/octane package?')) {
 
-        $this->info('Customer model installed successfully in '.$destination);
+            $this->info('Installing laravel/octane...');
+            exec('composer require laravel/octane');
+            $this->info('laravel/octane installed successfully');
+
+            if ($this->confirm('Do you want to run the octane install command?')) {
+                $this->info('Running php artisan octane:install...');
+                $this->call('octane:install');
+                $this->info('php artisan octane:install ran successfully');
+            }
+        }
+
+        if ($this->confirm('Do you want to install the laravel/vapor-core package?')) {
+
+            $this->info('Installing laravel/vapor-core...');
+            exec('composer require laravel/vapor-core');
+            $this->info('laravel/vapor-core installed successfully');
+
+            if ($this->confirm('Do you want to run the vapor:install command?')) {
+                $this->info('Running php artisan vapor:install...');
+                $this->call('vapor:install');
+                $this->info('php artisan vapor:install ran successfully');
+            }
+        }
     }
 }
