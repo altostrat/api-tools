@@ -109,7 +109,9 @@ class MikrocloudServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__ . '/../routes/authenticated.php' => $this->app->basePath('routes/authenticated.php'),
             ], 'mikrocloud-routes');
-
+            $this->publishes([
+                __DIR__ . '/../views' => $this->app->basePath('resources/views/vendor'),
+            ], 'mikrocloud-mail-template');
         }
     }
 
