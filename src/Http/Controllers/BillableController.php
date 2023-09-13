@@ -15,7 +15,8 @@ class BillableController extends Controller
     {
 
         $count_only = $request->input('count', false);
-        $model = ucfirst($model);
+
+        $model = Str($model)->studly()->toString();
         $class = 'App\Models\\' . $model;
 
         if (!class_exists($class)) {
