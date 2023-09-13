@@ -68,14 +68,14 @@ class MyModel extends BillableModel
 
 The model that you wish to make billable must have a UUID `customer_id` column and the `id` column must be a UUID.
 
-> Nothing more is needed, when a user attempts to create an item, a check will be performed to see if the user has a valid subscription.
-> If the user is not allowed to create the item, execution will be halted and a response will be returned to the user.
+ Nothing more is needed, when a user attempts to create an item, a check will be performed to see if the user has a valid subscription.
+ If the user is not allowed to create the item, execution will be halted and a response will be returned to the user.
 
-> **WARNING**: When making a model billable, only an authenticated user can create the model.
-> That means it must come in through an authenticated route and the `auth()->user()` must be set.
-> You cannot create a billable model through a job or a command.
-> 
-> **HTTP requests only.**
+ **WARNING**: When making a model billable, only an authenticated user can create the model.
+ That means it must come in through an authenticated route and the `auth()->user()` must be set.
+ You cannot create a billable model through a job or a command.
+ 
+ **HTTP requests only.**
 
 ### Helpers
 The following helpers are available:
