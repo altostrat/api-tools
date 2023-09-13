@@ -61,6 +61,5 @@ class BillableModel extends Model
                 return $model;
             }
         });
-        
     }
 }
