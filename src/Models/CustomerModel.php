@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Mikrocloud\Mikrocloud\Models\Customer as CustomerModel;
 
-class Customer extends CustomerModel
+abstract class Customer extends CustomerModel
 {
     /**
      * Pass the customer_id to the parent constructor
