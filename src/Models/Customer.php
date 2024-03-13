@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Mikrocloud\Mikrocloud\Traits\CustomerTrait;
 
-abstract class Customer extends Model implements Authenticatable
+class Customer extends Model implements Authenticatable
 {
     use CustomerTrait;
 
@@ -37,5 +37,10 @@ abstract class Customer extends Model implements Authenticatable
         $scopes = Arr::get($this->attributes, 'permissions', []);
         // return in_array($ability, $scopes);
         return true;
+    }
+
+    public function getAuthPasswordName(): string
+    {
+        return 'password';
     }
 }
