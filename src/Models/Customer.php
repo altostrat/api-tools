@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Mikrocloud\Mikrocloud\Traits\CustomerTrait;
 
-class Customer extends Model implements Authenticatable
+abstract class Customer extends Model implements Authenticatable
 {
     use CustomerTrait;
 
