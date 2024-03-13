@@ -4,12 +4,12 @@ namespace App\Models;
 
 use Mikrocloud\Mikrocloud\Models\Customer as CustomerModel;
 
-abstract class Customer extends CustomerModel
+class Customer extends CustomerModel
 {
     /**
      * Pass the customer_id to the parent constructor
      */
-    public function __construct(string $customer_id)
+    public function __construct(string $customer_id = '')
     {
         parent::__construct($customer_id);
     }
