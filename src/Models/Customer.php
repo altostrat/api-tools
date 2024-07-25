@@ -34,9 +34,8 @@ class Customer extends Model implements Authenticatable
 
     public function can($ability): bool
     {
-        $scopes = Arr::get($this->attributes, 'permissions', []);
-        // return in_array($ability, $scopes);
-        return true;
+        $scopes = Arr::get($this->attributes, 'scopes', []);
+        return in_array($ability, $scopes);
     }
 
     public function getAuthPasswordName(): string

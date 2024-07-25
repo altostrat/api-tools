@@ -46,7 +46,7 @@ class Auth0Users
         });
 
         $claims = collect($claims)
-            ->only('id', 'user_id', 'date_format', 'time_format', 'timezone', 'language', 'permissions', 'is_direct')
+            ->only('id', 'user_id', 'date_format', 'time_format', 'timezone', 'language', 'scopes', 'is_direct')
             ->filter(function ($value) {
                 return ! is_null($value);
             })->toArray();
