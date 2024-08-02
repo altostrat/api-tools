@@ -12,9 +12,6 @@ use Illuminate\Queue\SerializesModels;
 class AuditLogJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-
-    protected $client;
-
     public function __construct(
         public string $team_id,
         public string $user_id,
@@ -24,11 +21,11 @@ class AuditLogJob implements ShouldQueue
         public string $now,
     )
     {
-        $this->client = app('cloudwatch-logs');
     }
 
     public function handle(): void
     {
+        $client = app('cloudwatch-logs');
         $message = json_encode([ //send a sns message to audit topic
             'team_id' => $this->team_id,
             'user_id' => $this->user_id,
@@ -39,7 +36,7 @@ class AuditLogJob implements ShouldQueue
         ]);
         try {
 
-            $this->client->putLogEvents([
+            $client->putLogEvents([
                 'logGroupName' => 'AuditLog',
                 'logStreamName' => $this->team_id,
                 'logEvents' => [
@@ -59,7 +56,8 @@ class AuditLogJob implements ShouldQueue
 
     public function createLogStream(): void
     {
-        $this->client->createLogStream([
+        $client = app('cloudwatch-logs');
+        $client->createLogStream([
             'logGroupName' => 'AuditLog',
             'logStreamName' => $this->team_id,
         ]);
