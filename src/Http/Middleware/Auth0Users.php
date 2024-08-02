@@ -8,6 +8,7 @@ use Auth0\SDK\Token;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Mikrocloud\Mikrocloud\Jobs\SnsAuditLogJob;
 
 class Auth0Users
 {
@@ -50,6 +51,13 @@ class Auth0Users
             ->filter(function ($value) {
                 return ! is_null($value);
             })->toArray();
+
+        $user_id = Arr::get($claims, 'user_id');
+        $request_uri = $request->getRequestUri();
+        $payload = $request->all();
+        $method = $request->method();
+        $now = now()->toDateTimeString();
+        SnsAuditLogJob::dispatch($customer_id, $user_id, $request_uri, $payload, $method, $now);
 
         auth()->login(app('App\Models\Customer')->setRawAttributes($claims));
 
