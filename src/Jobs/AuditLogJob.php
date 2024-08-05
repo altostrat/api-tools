@@ -32,13 +32,13 @@ class AuditLogJob implements ShouldQueue
             'route' => $this->request_uri,
             'request' => $this->payload,
             'method' => $this->method,
-            'now' => $this->now,
+            'timestamp' => $this->now,
         ]);
         try {
 
             $client->putLogEvents([
                 'logGroupName' => 'AuditLog',
-                'logStreamName' => $this->team_id,
+                'logStreamName' => $this->team_id.'/'.$this->user_id,
                 'logEvents' => [
                     [
                         'timestamp' => now()->timestamp * 1000,
@@ -59,7 +59,7 @@ class AuditLogJob implements ShouldQueue
         $client = app('cloudwatch-logs');
         $client->createLogStream([
             'logGroupName' => 'AuditLog',
-            'logStreamName' => $this->team_id,
+            'logStreamName' => $this->team_id.'/'.$this->user_id,
         ]);
     }
 }
