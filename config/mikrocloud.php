@@ -15,4 +15,8 @@ return [
     ],
     'customer_model' => env('MIKROCLOUD_CUSTOMER_MODEL', 'App\Models\Customer'),
     'api_prefix' => env('API_PREFIX', 'api'),
+    'amplitude' => [
+        'api_key' => env('AMPLITUDE_API_KEY'),
+        'endpoint' => env('AMPLITUDE_ENDPOINT', 'https://api2.amplitude.com/2/httpapi'),
+    ],
 ];
