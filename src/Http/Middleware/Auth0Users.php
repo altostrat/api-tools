@@ -57,6 +57,11 @@ class Auth0Users
         $payload = $request->all();
         $method = $request->method();
         $now = now()->toDateTimeString();
+
+        if ($request->files->count() > 0) {
+            $payload = collect($payload)->except('file')->toArray();
+        }
+        
         AuditLogJob::dispatch($customer_id, $user_id, $request_uri, $payload, $method, $now);
 
         auth()->login(app('App\Models\Customer')->setRawAttributes($claims));
