@@ -15,9 +15,12 @@ class AmplitudeJob implements ShouldQueue
 
     public string $eventType;
 
-    public function __construct(string $eventType)
+    public $user;
+
+    public function __construct(string $eventType, $user)
     {
         $this->eventType = $eventType;
+        $this->user = $user;
     }
 
     public function handle()
@@ -30,10 +33,10 @@ class AmplitudeJob implements ShouldQueue
             'events' => [
                 [
                     'event_type' => $this->eventType,
-                    'user_id' => auth()->user()->user_id,
+                    'user_id' => $this->user->user_id,
                     'user_properties' => [
-                        'team_id' => auth()->user()->id,
-                        'timezone' => auth()->user()->timezone,
+                        'team_id' => $this->user->id,
+                        'timezone' => $this->user->timezone,
                     ],
                 ],
             ],

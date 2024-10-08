@@ -10,6 +10,6 @@ class Amplitude
     public static function report(string $eventType)
     {
         //call the amplitude job
-        AmplitudeJob::dispatch($eventType);
+        AmplitudeJob::dispatch($eventType,auth()->user());
     }
 }
