@@ -10,6 +10,11 @@ class Amplitude
     public static function report(string $eventType)
     {
         //call the amplitude job
-        AmplitudeJob::dispatch($eventType,auth()->user()->user_id,auth()->user()->id,auth()->user()->timezone);
+        if (!auth()->user()->user_id) {
+            //auth mikroservice
+            AmplitudeJob::dispatch($eventType,auth()->user()->id,auth()->user()->current_team_id,auth()->user()->timezone);
+        } else {
+            AmplitudeJob::dispatch($eventType,auth()->user()->user_id,auth()->user()->id,auth()->user()->timezone);
+        }
     }
 }
