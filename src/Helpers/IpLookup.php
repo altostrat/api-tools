@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Helpers;
+namespace Altostrat\Tools\Helpers;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Mikrocloud\Mikrocloud\Models\Customer as CustomerModel;
+use Altostrat\Tools\Models\Customer as CustomerModel;
 
 class Customer extends CustomerModel
 {

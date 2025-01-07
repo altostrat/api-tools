@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Http\Middleware;
+namespace Altostrat\Tools\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;

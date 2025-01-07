@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Events;
+namespace Altostrat\Tools\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;

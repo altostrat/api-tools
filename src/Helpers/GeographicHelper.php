@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Helpers;
+namespace Altostrat\Tools\Helpers;
 
 class GeographicHelper
 {

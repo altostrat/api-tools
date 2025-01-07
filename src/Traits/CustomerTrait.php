@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Traits;
+namespace Altostrat\Tools\Traits;
 
 trait CustomerTrait
 {

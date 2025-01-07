@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Models;
+namespace Altostrat\Tools\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -40,7 +40,7 @@ class BillableModel extends Model
             $data = [
                 'class' => get_class($model),
                 'basename' => class_basename($model),
-                'api_prefix' => config('mikrocloud.api_prefix'),
+                'api_prefix' => config('altostrat.api_prefix'),
             ];
 
             $billable = Http::withToken($bearer)
@@ -48,7 +48,7 @@ class BillableModel extends Model
                     'Accept' => 'application/json',
                     'Content-Type' => 'application/json',
                 ])
-                ->post(config('mikrocloud.url') . '/v1/billable', $data);
+                ->post(config('altostrat.url') . '/v1/billable', $data);
 
             if ($billable->failed()) {
                 if (!empty($billable->json()['message'])) {

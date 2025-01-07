@@ -21,8 +21,7 @@
 {{-- Footer --}}
 @slot('footer')
 @component('mail::footer')
-© MikroCloud {{ date('Y') }} <br />
-@lang('SD-WAN for MikroTik')
+© Altostrat {{ date('Y') }} <br />
 @endcomponent
 @endslot
 @endcomponent

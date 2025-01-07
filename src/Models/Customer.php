@@ -1,11 +1,11 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Models;
+namespace Altostrat\Tools\Models;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Mikrocloud\Mikrocloud\Traits\CustomerTrait;
+use Altostrat\Tools\Traits\CustomerTrait;
 
 class Customer extends Model implements Authenticatable
 {

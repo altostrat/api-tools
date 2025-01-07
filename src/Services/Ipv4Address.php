@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Services;
+namespace Altostrat\Tools\Services;
 
 use Exception;
 use Illuminate\Support\Arr;

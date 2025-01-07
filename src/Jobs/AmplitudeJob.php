@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Jobs;
+namespace Altostrat\Tools\Jobs;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,8 +34,8 @@ class AmplitudeJob implements ShouldQueue
         Http::withHeaders([
             'Content-Type' => 'application/json',
             'Accept' => 'application/json',
-        ])->post(config('mikrocloud.amplitude.endpoint'), [
-            'api_key' => config('mikrocloud.amplitude.api_key'),
+        ])->post(config('altostrat.amplitude.endpoint'), [
+            'api_key' => config('altostrat.amplitude.api_key'),
             'events' => [
                 [
                     'event_type' => $this->eventType,

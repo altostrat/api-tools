@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Console;
+namespace Altostrat\Tools\Console;
 
 use Illuminate\Console\Command;
 
@@ -11,21 +11,21 @@ class CustomerModelCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'mikrocloud:install';
+    protected $signature = 'altostrat:install';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Installs assets for MikroCloud';
+    protected $description = 'Installs assets for Altostrat';
 
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $customerModel = config('mikrocloud.customer_model');
+        $customerModel = config('altostrat.customer_model');
         $customerModel = str_replace('App', '', $customerModel);
         $customerModel = str_replace('\\', '/', $customerModel);
 
@@ -75,7 +75,7 @@ class CustomerModelCommand extends Command
         if (! file_exists($routes_file)) {
             $this->info('Creating routes/authenticated.php...');
             $this->call('vendor:publish', [
-                '--tag' => 'mikrocloud-routes',
+                '--tag' => 'altostrat-routes',
                 '--force' => true,
             ]);
             $this->info('routes/authenticated.php created successfully');

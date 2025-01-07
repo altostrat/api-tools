@@ -1,9 +1,9 @@
-# MikroCloud - Laravel Tooling
+# Altostrat - Laravel Tooling
 
 ## Installation
 
 ```bash
-composer require mikrocloud/mikrocloud
+composer require altostrat/altostrat
 ```
 
 ### Environment Variables
@@ -16,7 +16,7 @@ AUTH0_COOKIE_SECRET=
 API_PREFIX=
 ```
 
-`AUTH0_CLIENT_ID` should be the client ID of the MikroCloud Auth0 tenant application.
+`AUTH0_CLIENT_ID` should be the client ID of the Altostrat Auth0 tenant application.
 `AUTH0_COOKIE_SECRET` should be a random string of at least 32 characters.
 `API_PREFIX` should be the prefix for your API routes, e.g. `v1/my-service`.
 
@@ -25,13 +25,13 @@ API_PREFIX=
 Run the following command run through some boilerplate installation steps:
 
 ```bash
-php artisan mikrocloud:install
+php artisan altostrat:install
 ```
 
 Afterward run the following command to verify that everything is working:
 
 ```bash
-php artisan mikrocloud:check
+php artisan altostrat:check
 ```
 
 ---
@@ -46,12 +46,12 @@ During the installation a model called `Customer` was created. You can use this 
 The `Customer` model is read-only and only acts as a way to leverage eloquent relationships.
 
 ### Billable Models
-When creating a billable service, commonly a particular model is used to represent the billable item. If you want to make a model billable, simply extend the model from `MikroCloud\Billable\BillableModel`.
+When creating a billable service, commonly a particular model is used to represent the billable item. If you want to make a model billable, simply extend the model from `Altostrat\Billable\BillableModel`.
 
 ```php
 namespace App\Models;
 
-use MikroCloud\Billable\BillableModel;
+use Altostrat\Billable\BillableModel;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class MyModel extends BillableModel

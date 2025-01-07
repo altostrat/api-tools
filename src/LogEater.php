@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud;
+namespace Altostrat\Tools;
 
 use Illuminate\Support\Facades\Http;
 use Psr\Log\LoggerInterface;
@@ -70,15 +70,15 @@ class LogEater implements LoggerInterface
         ];
 
         try {
-            $result = Http::withToken(config('mikrocloud.key'))
-                ->post(config('mikrocloud.url').config('mikrocloud.logging.endpoint'), $data);
+            $result = Http::withToken(config('altostrat.key'))
+                ->post(config('altostrat.url').config('altostrat.logging.endpoint'), $data);
 
             if ($result->status() === 401) {
-                throw new \Exception('LogEater: Invalid MikroCloud key! Set MIKROCLOUD_KEY in your .env file');
+                throw new \Exception('LogEater: Invalid Altostrat key! Set MIKROCLOUD_KEY in your .env file');
             }
 
             if ($result->failed()) {
-                throw new \Exception('LogEater: Failed to send log to MikroCloud');
+                throw new \Exception('LogEater: Failed to send log to Altostrat');
             }
 
         } catch (\Throwable $th) {

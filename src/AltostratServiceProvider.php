@@ -1,15 +1,15 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud;
+namespace Altostrat\Tools;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Mikrocloud\Mikrocloud\Console\CheckInstallationCommand;
-use Mikrocloud\Mikrocloud\Console\CustomerModelCommand;
-use Mikrocloud\Mikrocloud\Http\Middleware\Auth0Users;
-use Mikrocloud\Mikrocloud\Http\Middleware\ForceJson;
+use Altostrat\Tools\Console\CheckInstallationCommand;
+use Altostrat\Tools\Console\CustomerModelCommand;
+use Altostrat\Tools\Http\Middleware\Auth0Users;
+use Altostrat\Tools\Http\Middleware\ForceJson;
 
-class MikrocloudServiceProvider extends ServiceProvider
+class AltostratServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap any package services.
@@ -35,14 +35,14 @@ class MikrocloudServiceProvider extends ServiceProvider
     }
 
     /**
-     * Setup the configuration for MikroCloud.
+     * Setup the configuration for Altostrat.
      *
      * @return void
      */
     protected function configure()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/mikrocloud.php', 'mikrocloud'
+            __DIR__ . '/../config/altostrat.php', 'altostrat'
         );
     }
 
@@ -54,10 +54,10 @@ class MikrocloudServiceProvider extends ServiceProvider
     protected function registerRoutes()
     {
         Route::group([
-            'prefix' => config('mikrocloud.api_prefix'),
-            'namespace' => 'Mikrocloud\Mikrocloud\Http\Controllers',
-            'as' => 'mikrocloud.',
-            'middleware' => ['mikrocloud', 'json'],
+            'prefix' => config('altostrat.api_prefix'),
+            'namespace' => 'Altostrat\Tools\Http\Controllers',
+            'as' => 'altostrat.',
+            'middleware' => ['altostrat', 'json'],
         ], function () {
             $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
         });
@@ -66,9 +66,9 @@ class MikrocloudServiceProvider extends ServiceProvider
 
         if (file_exists($routes_file)) {
             Route::group([
-                'prefix' => config('mikrocloud.api_prefix'),
+                'prefix' => config('altostrat.api_prefix'),
                 'as' => 'auth0.',
-                'middleware' => ['mikrocloud', 'json'],
+                'middleware' => ['altostrat', 'json'],
             ], function () {
                 $this->loadRoutesFrom($this->app->basePath('routes/authenticated.php'));
             });
@@ -108,16 +108,16 @@ class MikrocloudServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../routes/authenticated.php' => $this->app->basePath('routes/authenticated.php'),
-            ], 'mikrocloud-routes');
+            ], 'altostrat-routes');
             $this->publishes([
                 __DIR__ . '/../views' => $this->app->basePath('resources/views/vendor'),
-            ], 'mikrocloud-mail-template');
+            ], 'altostrat-mail-template');
         }
     }
 
     protected function registerMiddleware(): void
     {
-        $this->app['router']->aliasMiddleware('mikrocloud', Auth0Users::class);
+        $this->app['router']->aliasMiddleware('altostrat', Auth0Users::class);
         $this->app['router']->aliasMiddleware('json', ForceJson::class);
     }
 }

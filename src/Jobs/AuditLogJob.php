@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Jobs;
+namespace Altostrat\Tools\Jobs;
 
 use Aws\CloudWatchLogs\Exception\CloudWatchLogsException;
 use Illuminate\Bus\Queueable;

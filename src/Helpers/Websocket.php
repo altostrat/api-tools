@@ -1,8 +1,8 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Helpers;
+namespace Altostrat\Tools\Helpers;
 
-use Mikrocloud\Mikrocloud\Events\FrontendPushEvent;
+use Altostrat\Tools\Events\FrontendPushEvent;
 
 class Websocket
 {

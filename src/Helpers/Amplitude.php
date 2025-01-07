@@ -1,9 +1,9 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Helpers;
+namespace Altostrat\Tools\Helpers;
 
 use Illuminate\Support\Facades\Http;
-use Mikrocloud\Mikrocloud\Jobs\AmplitudeJob;
+use Altostrat\Tools\Jobs\AmplitudeJob;
 
 class Amplitude
 {

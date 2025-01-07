@@ -1,6 +1,6 @@
 <?php
 
-namespace Mikrocloud\Mikrocloud\Http\Middleware;
+namespace Altostrat\Tools\Http\Middleware;
 
 use App\Models\Customer;
 use Auth0\SDK\Configuration\SdkConfiguration;
@@ -8,19 +8,19 @@ use Auth0\SDK\Token;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Mikrocloud\Mikrocloud\Jobs\AuditLogJob;
+use Altostrat\Tools\Jobs\AuditLogJob;
 
 class Auth0Users
 {
     protected function getClient(): SdkConfiguration
     {
         $env = config('app.env');
-        $audience = $env === 'staging' ? 'https://api.staging.mikrocloud.com' : 'https://api.mikrocloud.com';
+        $audience = $env === 'staging' ? 'https://api.staging.altostrat.io' : 'https://api.altostrat.io';
 
         return new SdkConfiguration([
-            'domain' => config('mikrocloud.auth0.domain'),
-            'clientId' => config('mikrocloud.auth0.client_id'),
-            'cookieSecret' => config('mikrocloud.auth0.cookie_secret'),
+            'domain' => config('altostrat.auth0.domain'),
+            'clientId' => config('altostrat.auth0.client_id'),
+            'cookieSecret' => config('altostrat.auth0.cookie_secret'),
             'audience' => [$audience],
         ]);
     }
