@@ -1,23 +1,23 @@
 {
-    "name": "mikrocloud/mikrocloud",
-    "description": "Tooling for MikroCloud microservices",
+    "name": "altostrat/tools",
+    "description": "Tooling for Laravel microservices",
     "type": "library",
     "license": "proprietary",
     "autoload": {
         "psr-4": {
-            "Mikrocloud\\Mikrocloud\\": "src/"
+            "Altostrat\\Tools\\": "src/"
         }
     },
     "authors": [
         {
             "name": "Hannes Kruger",
-            "email": "hannes.kruger@mikrocloud.com"
+            "email": "support@altostrat.io"
         }
     ],
     "extra": {
         "laravel": {
             "providers": [
-                "Mikrocloud\\Mikrocloud\\MikrocloudServiceProvider"
+                "Altostrat\\Tools\\AltostratServiceProvider"
             ]
         }
     },
