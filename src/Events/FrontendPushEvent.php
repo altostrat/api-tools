@@ -14,8 +14,8 @@ class FrontendPushEvent implements ShouldBroadcast, ShouldQueue
 {
     use Dispatchable;
     use InteractsWithSockets;
-    use SerializesModels;
     use Queueable;
+    use SerializesModels;
 
     /**
      * Create a new event instance.
@@ -24,8 +24,7 @@ class FrontendPushEvent implements ShouldBroadcast, ShouldQueue
         protected $user,
         protected $event,
         protected $data
-    )
-    {
+    ) {
         //
     }
 
@@ -51,6 +50,6 @@ class FrontendPushEvent implements ShouldBroadcast, ShouldQueue
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('user-' . $this->user);
+        return new PrivateChannel('user-'.$this->user);
     }
 }

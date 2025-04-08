@@ -2,13 +2,13 @@
 
 namespace Altostrat\Tools\Http\Middleware;
 
+use Altostrat\Tools\Jobs\AuditLogJob;
 use App\Models\Customer;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Token;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
-use Altostrat\Tools\Jobs\AuditLogJob;
 
 class Auth0Users
 {
@@ -61,8 +61,8 @@ class Auth0Users
         if ($request->files->count() > 0) {
             $payload = collect($payload)->except('file')->toArray();
         }
-        
-        AuditLogJob::dispatch($customer_id, $user_id, $request_uri, $payload, $method, $now);
+
+        // AuditLogJob::dispatch($customer_id, $user_id, $request_uri, $payload, $method, $now);
 
         auth()->login(app('App\Models\Customer')->setRawAttributes($claims));
 

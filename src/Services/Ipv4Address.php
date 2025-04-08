@@ -64,9 +64,9 @@ class Ipv4Address
         $array = explode('/', $rfc_4632_prefix);
 
         $this->ip_address = $array[0];
-        $this->cidr = (int)(isset($array[1]) ? $array[1] : 32);
+        $this->cidr = (int) (isset($array[1]) ? $array[1] : 32);
 
-        if (!filter_var($this->ip_address, FILTER_VALIDATE_IP)) {
+        if (! filter_var($this->ip_address, FILTER_VALIDATE_IP)) {
             throw new Exception("{$this->ip_address} is not a valid IPv4 address");
         }
 
@@ -161,9 +161,9 @@ class Ipv4Address
     {
         $cache_key = sha1("ip-api:{$this->ip_address}");
 
-        $url = 'http://ip-api.com/json/' . urlencode($this->ip_address);
+        $url = 'http://ip-api.com/json/'.urlencode($this->ip_address);
 
-        if (!$response = Cache::get($cache_key)) {
+        if (! $response = Cache::get($cache_key)) {
             $response = Http::get($url)->json();
             Cache::put($cache_key, $response, 86400 * 7);
         }

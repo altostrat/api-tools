@@ -10,7 +10,7 @@ class IpLookup
     /**
      * Get information about an IP address.
      *
-     * @param string $ip_address
+     * @param  string  $ip_address
      * @return object
      */
     public static function info($ip_address)
@@ -24,7 +24,7 @@ class IpLookup
         }
 
         // Prepare the URL to query for the IP information
-        $url = 'http://ip-api.com/json/' . urlencode($ip_address);
+        $url = 'http://ip-api.com/json/'.urlencode($ip_address);
 
         // Send a GET request to the IP information API and retrieve the response body
         $response = Http::get($url)->body()->throw();

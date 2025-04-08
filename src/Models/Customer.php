@@ -2,10 +2,10 @@
 
 namespace Altostrat\Tools\Models;
 
+use Altostrat\Tools\Traits\CustomerTrait;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Altostrat\Tools\Traits\CustomerTrait;
 
 class Customer extends Model implements Authenticatable
 {
@@ -35,6 +35,7 @@ class Customer extends Model implements Authenticatable
     public function can($ability): bool
     {
         $scopes = Arr::get($this->attributes, 'scopes', []);
+
         return in_array($ability, $scopes);
     }
 

@@ -2,9 +2,9 @@
 
 namespace Altostrat\Tools\Http\Controllers;
 
-use Illuminate\Routing\Controller;
-use Illuminate\Http\Request;
 use Altostrat\Tools\Http\Resources\BillableCountResource;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class BillableController extends Controller
 {
@@ -17,14 +17,14 @@ class BillableController extends Controller
         $count_only = $request->input('count', false);
 
         $model = Str($model)->studly()->toString();
-        $class = 'App\Models\\' . $model;
+        $class = 'App\Models\\'.$model;
 
-        if (!class_exists($class)) {
-            abort(410, "The model '" . $model . "' does not exist");
+        if (! class_exists($class)) {
+            abort(410, "The model '".$model."' does not exist");
         }
 
-        if (!is_subclass_of($class, 'Altostrat\Tools\Models\BillableModel')) {
-            abort(422, "The model '" . $model . "' does not extend the 'Altostrat BillableModel' class");
+        if (! is_subclass_of($class, 'Altostrat\Tools\Models\BillableModel')) {
+            abort(422, "The model '".$model."' does not extend the 'Altostrat BillableModel' class");
         }
 
         $has_soft_deletes = \Schema::hasColumn((new $class)->getTable(), 'deleted_at');

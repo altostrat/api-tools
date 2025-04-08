@@ -2,12 +2,12 @@
 
 namespace Altostrat\Tools;
 
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\ServiceProvider;
 use Altostrat\Tools\Console\CheckInstallationCommand;
 use Altostrat\Tools\Console\CustomerModelCommand;
 use Altostrat\Tools\Http\Middleware\Auth0Users;
 use Altostrat\Tools\Http\Middleware\ForceJson;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
 
 class AltostratServiceProvider extends ServiceProvider
 {
@@ -42,7 +42,7 @@ class AltostratServiceProvider extends ServiceProvider
     protected function configure()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/altostrat.php', 'altostrat'
+            __DIR__.'/../config/altostrat.php', 'altostrat'
         );
     }
 
@@ -59,7 +59,7 @@ class AltostratServiceProvider extends ServiceProvider
             'as' => 'altostrat.',
             'middleware' => ['altostrat', 'json'],
         ], function () {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+            $this->loadRoutesFrom(__DIR__.'/../routes/api.php');
         });
 
         $routes_file = app()->basePath('routes/authenticated.php');
@@ -107,10 +107,10 @@ class AltostratServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../routes/authenticated.php' => $this->app->basePath('routes/authenticated.php'),
+                __DIR__.'/../routes/authenticated.php' => $this->app->basePath('routes/authenticated.php'),
             ], 'altostrat-routes');
             $this->publishes([
-                __DIR__ . '/../views' => $this->app->basePath('resources/views/vendor'),
+                __DIR__.'/../views' => $this->app->basePath('resources/views/vendor'),
             ], 'altostrat-mail-template');
         }
     }

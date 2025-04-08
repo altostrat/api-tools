@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ForceJson
 {
-
     public function handle(Request $request, Closure $next): Response
     {
         $request->headers->set('Accept', 'application/json');
@@ -16,5 +15,4 @@ class ForceJson
 
         return $next($request);
     }
-
 }
