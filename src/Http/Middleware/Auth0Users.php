@@ -472,9 +472,13 @@ class Auth0Users
 
         $filteredClaims = collect($claims)
                 ->only('id', 'user_id', 'date_format', 'time_format', 'timezone', 'language', 'scopes', 'is_direct',
-                        'organization')
+                        'organization', 'permissions')
                 ->filter(fn($value) => !is_null($value))
                 ->toArray();
+
+        if (empty($filteredClaims['scopes']) && !empty($filteredClaims['permissions'])) {
+            $filteredClaims['scopes'] = $filteredClaims['permissions'];
+        }
 
         $user_id = Arr::get($filteredClaims, 'user_id');
         $request_uri = $request->getRequestUri();
