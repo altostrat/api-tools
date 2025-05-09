@@ -9,6 +9,11 @@ return [
                 'disabled' => env('ALTOSTRAT_LOGGING_DISABLED', false),
         ],
         'auth0' => [
+                'legacy' => [
+                        'client_id' => env('AUTH0_LEGACY_CLIENT_ID'),
+                        'domain' => env('AUTH0_LEGACY_DOMAIN', 'auth.altostrat.app'),
+                        'cookie_secret' => env('AUTH0_COOKIE_SECRET'),
+                ],
                 'client_id' => env('AUTH0_CLIENT_ID'),
                 'domain' => env('AUTH0_DOMAIN', 'auth.altostrat.io'),
                 'cookie_secret' => env('AUTH0_COOKIE_SECRET'),

@@ -12,14 +12,14 @@ use Illuminate\Support\Arr;
 
 class Auth0Users
 {
-    protected function getClient(): SdkConfiguration
+    protected function getClient(bool $useLegacy = false): SdkConfiguration
     {
         $env = config('app.env');
         $audience = $env === 'staging' ? 'https://api.staging.altostrat.io' : 'https://api.altostrat.io';
 
         return new SdkConfiguration([
-                'domain' => config('altostrat.auth0.domain'),
-                'clientId' => config('altostrat.auth0.client_id'),
+                'domain' => $useLegacy ? config('altostrat.auth0.legacy.domain') : config('altostrat.auth0.domain'),
+                'clientId' => $useLegacy ? config('altostrat.auth0.legacy.client_id') : config('altostrat.auth0.client_id'),
                 'cookieSecret' => config('altostrat.auth0.cookie_secret'),
                 'audience' => [$audience],
         ]);
@@ -29,8 +29,12 @@ class Auth0Users
     {
         $bearerToken = $request->bearerToken() ?? '';
 
+        $iss = $this->getTokenIss($bearerToken);
+
+        $useLegacy = $iss === 'https://auth.altostrat.app/';
+
         try {
-            $client = $this->getClient();
+            $client = $this->getClient($useLegacy);
             $token = new Token($client, $bearerToken);
             $token->validate();
             $claims = $token->toArray();
@@ -47,10 +51,16 @@ class Auth0Users
         });
 
         $claims = collect($claims)
-                ->only('id', 'user_id', 'date_format', 'time_format', 'timezone', 'language', 'scopes', 'is_direct', 'organization')
+                ->only('id', 'user_id', 'date_format', 'time_format', 'timezone', 'language', 'scopes', 'is_direct',
+                        'email', 'auth0_id', 'permissions', 'organization')
                 ->filter(function ($value) {
-                    return ! is_null($value);
+                    return !is_null($value);
                 })->toArray();
+
+        if (!isset($claims['scopes'])) {
+            $claims['scopes'] = $claims['permissions'];
+            unset($claims['permissions']);
+        }
 
         $user_id = Arr::get($claims, 'user_id');
         $request_uri = $request->getRequestUri();
@@ -70,5 +80,20 @@ class Auth0Users
         $request->headers->set('Content-Type', 'application/json');
 
         return $next($request);
+    }
+
+    private function getTokenIss(string $token)
+    {
+        $parts = explode('.', $token);
+        if (count($parts) !== 3) {
+            return null;
+        }
+
+        $payload = json_decode(base64_decode($parts[1]), true);
+        if (isset($payload['iss'])) {
+            return $payload['iss'];
+        }
+
+        return null;
     }
 }
