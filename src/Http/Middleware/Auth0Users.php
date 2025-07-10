@@ -52,7 +52,7 @@ class Auth0Users
 
         $claims = collect($claims)
             ->only('id', 'user_id', 'date_format', 'time_format', 'timezone', 'language', 'scopes', 'is_direct',
-                'email', 'permissions', 'organization', 'sub')
+                'email', 'permissions', 'organization', 'sub', 'org_id', 'workspace_id')
             ->filter(function ($value) {
                 return ! is_null($value);
             })->toArray();
