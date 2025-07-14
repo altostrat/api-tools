@@ -20,10 +20,10 @@ class Auth0Users
         $audience = $env === 'staging' ? 'https://api.staging.altostrat.io' : 'https://api.altostrat.io';
 
         return new SdkConfiguration([
-                'domain' => $useLegacy ? config('altostrat.auth0.legacy.domain') : config('altostrat.auth0.domain'),
-                'clientId' => $useLegacy ? config('altostrat.auth0.legacy.client_id') : config('altostrat.auth0.client_id'),
-                'cookieSecret' => config('altostrat.auth0.cookie_secret'),
-                'audience' => [$audience],
+            'domain' => $useLegacy ? config('altostrat.auth0.legacy.domain') : config('altostrat.auth0.domain'),
+            'clientId' => $useLegacy ? config('altostrat.auth0.legacy.client_id') : config('altostrat.auth0.client_id'),
+            'cookieSecret' => config('altostrat.auth0.cookie_secret'),
+            'audience' => [$audience],
         ]);
     }
 
@@ -53,13 +53,13 @@ class Auth0Users
         });
 
         $claims = collect($claims)
-                ->only('id', 'user_id', 'date_format', 'time_format', 'timezone', 'language', 'scopes', 'is_direct',
-                        'email', 'auth0_id', 'permissions', 'organization')
-                ->filter(function ($value) {
-                    return !is_null($value);
-                })->toArray();
+            ->only('id', 'user_id', 'date_format', 'time_format', 'timezone', 'language', 'scopes', 'is_direct',
+                'email', 'permissions', 'organization', 'sub', 'org_id', 'workspace_id')
+            ->filter(function ($value) {
+                return ! is_null($value);
+            })->toArray();
 
-        if (!isset($claims['scopes'])) {
+        if (! isset($claims['scopes'])) {
             $claims['scopes'] = $claims['permissions'];
             unset($claims['permissions']);
         }
