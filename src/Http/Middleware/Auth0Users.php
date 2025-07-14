@@ -54,7 +54,7 @@ class Auth0Users
 
         $claims = collect($claims)
             ->only('id', 'user_id', 'date_format', 'time_format', 'timezone', 'language', 'scopes', 'is_direct',
-                'email', 'permissions', 'organization', 'sub', 'org_id', 'workspace_id')
+                'email', 'permissions', 'organization', 'sub', 'org_id', 'workspace_id', 'session', 'name')
             ->filter(function ($value) {
                 return ! is_null($value);
             })->toArray();
@@ -131,6 +131,8 @@ class Auth0Users
 
 
             $logData = [
+                'email'          => Arr::get($claims, 'email'),
+                'name'           => Arr::get($claims, 'name'),
                 'user_id'        => Arr::get($claims, 'sub'),
                 'org_id'         => Arr::get($claims, 'org_id'),
                 'workspace_id'   => Arr::get($claims, 'workspace_id'),
@@ -140,6 +142,7 @@ class Auth0Users
                 'status_code'    => $statusCode,
                 'response_payload' => $responsePayload,
                 'ip'             => $ip,
+                'session_id'     => Arr::get($claims, 'session'),
                 'user_agent'     => $request->userAgent(),
                 'frontend_page'  => $request->header('x-current-url'),
             ];

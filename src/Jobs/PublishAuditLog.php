@@ -50,6 +50,8 @@ class PublishAuditLog implements ShouldQueue
                 'workspace_id'   => $this->logData['workspace_id'],
                 'user_id'        => $this->logData['user_id'],
                 'session_id'     => $this->logData['session_id'],
+                'email'          => $this->logData['email'] ?? null,
+                'name'           => $this->logData['name'] ?? null,
                 'event_time'     => now()->toISOString(),
                 'http_verb'      => $this->logData['method'],
                 'endpoint'       => $this->logData['uri'],
