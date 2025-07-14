@@ -127,6 +127,8 @@ class Auth0Users
                  }
                  $responsePayload = $responseContent;
             }
+            $ip = $request->header('x-forwarded-for') ?: $request->ip();
+
 
             $logData = [
                 'user_id'        => Arr::get($claims, 'sub'),
@@ -137,7 +139,7 @@ class Auth0Users
                 'method'         => $request->method(),
                 'status_code'    => $statusCode,
                 'response_payload' => $responsePayload,
-                'ip'             => $request->ip(),
+                'ip'             => $ip,
                 'user_agent'     => $request->userAgent(),
                 'frontend_page'  => $request->header('x-current-url'),
             ];
