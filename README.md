@@ -39,6 +39,7 @@ php artisan altostrat:check
 ## Usage
 
 ### Authenticated routes
+
 Whenever you want to register a route that requires authentication, add it to the `routes/authenticated.php` file.
 This will require the user to be authenticated and have the correct scopes to access the route.
 
@@ -46,6 +47,7 @@ During the installation a model called `Customer` was created. You can use this 
 The `Customer` model is read-only and only acts as a way to leverage eloquent relationships.
 
 ### Billable Models
+
 When creating a billable service, commonly a particular model is used to represent the billable item. If you want to make a model billable, simply extend the model from `Altostrat\Billable\BillableModel`.
 
 ```php
@@ -57,34 +59,58 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 class MyModel extends BillableModel
 {
     use HasUuids;
-    
+
     protected $fillable = [
         'customer_id',
     ];
-    
+
     //
 }
 ```
 
 The model that you wish to make billable must have a UUID `customer_id` column and the `id` column must be a UUID.
 
- Nothing more is needed, when a user attempts to create an item, a check will be performed to see if the user has a valid subscription.
- If the user is not allowed to create the item, execution will be halted and a response will be returned to the user.
+Nothing more is needed, when a user attempts to create an item, a check will be performed to see if the user has a valid subscription.
+If the user is not allowed to create the item, execution will be halted and a response will be returned to the user.
 
- **WARNING**: When making a model billable, only an authenticated user can create the model.
- That means it must come in through an authenticated route and the `auth()->user()` must be set.
- You cannot create a billable model through a job or a command.
- 
- **HTTP requests only.**
+**WARNING**: When making a model billable, only an authenticated user can create the model.
+That means it must come in through an authenticated route and the `auth()->user()` must be set.
+You cannot create a billable model through a job or a command.
+
+**HTTP requests only.**
 
 ### Helpers
+
 The following helpers are available:
+
 - `new ipv4Address(string $address)` - Creates a new IPv4Address object - use the `->withIsp()` method to get the ISP name.
 - `IpLookup::info(string $address)` - Returns an array with information about the IP address.
 - `Websocket::push(string $userId, string $event, array $data)` - Pushes an event to the user's websocket connection.
 - `GeographicHelper::class` - Helper class for geographic items, like a list of currencies, countries, etc.
 
+### Audit Logging
+
+The package includes automatic audit logging that publishes audit events to AWS SNS. To enable audit logging, add the following environment variable:
+
+```bash
+AUDIT_LOG_DSN="your_aws_key:your_aws_secret@arn:aws:sns:us-east-1:123456789012:your-audit-log-topic"
+```
+
+**DSN Format:** `aws_access_key:aws_secret_key@arn:aws:sns:region:account:topic-name`
+
+When enabled, the middleware will automatically capture and send the following data for each authenticated request:
+
+- Request details (method, URI, payload, headers)
+- Response details (status code, error responses)
+- User context (user_id, org_id, workspace_id)
+- Metadata (IP address, user agent, timestamp)
+
+The audit logs are sent asynchronously via a queued job (`PublishAuditLog`) to avoid impacting request performance.
+
+**Note:** Response payloads are only captured for error responses (status codes < 200 or >= 400) to minimize data volume.
+
 ## Implementation Notes
+
 Remember to ask the infrastructure team to add the prefix to the ALB with these paths:
 
 - `v1/my-service/*`
@@ -108,10 +134,10 @@ If `count=1` is not passed, the route will return a list like this:
 
 ```json
 [
-    {
-        "id": "....", // The ID of the model
-        "site_id": "...." // Only if the model has a site_id column otherwise this will be null
-    }
+  {
+    "id": "....", // The ID of the model
+    "site_id": "...." // Only if the model has a site_id column otherwise this will be null
+  }
 ]
 ```
 
@@ -119,7 +145,6 @@ If `count=1` is passed, the route will return a count like this:
 
 ```json
 {
-    "count": 1
+  "count": 1
 }
 ```
-

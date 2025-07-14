@@ -7,6 +7,7 @@ return [
         'logging' => [
                 'endpoint' => env('ALTOSTRAT_LOGGING_API', 'log-eater/log'),
                 'disabled' => env('ALTOSTRAT_LOGGING_DISABLED', false),
+                'audit_log_dsn' => env('AUDIT_LOG_DSN', null),
         ],
         'auth0' => [
                 'legacy' => [

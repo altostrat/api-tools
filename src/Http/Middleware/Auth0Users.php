@@ -2,13 +2,15 @@
 
 namespace Altostrat\Tools\Http\Middleware;
 
-use Altostrat\Tools\Jobs\AuditLogJob;
+use Altostrat\Tools\Jobs\PublishAuditLog;
 use App\Models\Customer;
 use Auth0\SDK\Configuration\SdkConfiguration;
 use Auth0\SDK\Token;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpFoundation\Response;
 
 class Auth0Users
 {
@@ -72,14 +74,20 @@ class Auth0Users
             $payload = collect($payload)->except('file')->toArray();
         }
 
-        // AuditLogJob::dispatch($customer_id, $user_id, $request_uri, $payload, $method, $now);
-
         auth()->login(app('App\Models\Customer')->setRawAttributes($claims));
 
         $request->headers->set('Accept', 'application/json');
         $request->headers->set('Content-Type', 'application/json');
 
-        return $next($request);
+        // Let the request complete
+        $response = $next($request);
+
+        // --- NEW AUDIT LOGIC: AFTER THE REQUEST IS HANDLED ---
+        if (config('altostrat.logging.audit_log_dsn')) {
+            $this->dispatchAuditLog($request, $response, $claims);
+        }
+
+        return $response;
     }
 
     private function getTokenIss(string $token)
@@ -95,5 +103,52 @@ class Auth0Users
         }
 
         return null;
+    }
+
+    /**
+     * Gathers data and dispatches the audit log job.
+     */
+    protected function dispatchAuditLog(Request $request, Response $response, array $claims): void
+    {
+        try {
+            $payload = $request->all();
+            if ($request->files->count() > 0) {
+                $payload = collect($payload)->except('file')->toArray();
+            }
+
+            // Capture response only if it's an error
+            $responsePayload = null;
+            $statusCode = $response->getStatusCode();
+            if ($statusCode < 200 || $statusCode >= 400) {
+                 // Try to decode json, otherwise get raw content
+                 $responseContent = json_decode($response->getContent(), true);
+                 if (json_last_error() !== JSON_ERROR_NONE) {
+                     $responseContent = $response->getContent();
+                 }
+                 $responsePayload = $responseContent;
+            }
+
+            $logData = [
+                'user_id'        => Arr::get($claims, 'sub'),
+                'org_id'         => Arr::get($claims, 'org_id'),
+                'workspace_id'   => Arr::get($claims, 'workspace_id'),
+                'uri'            => $request->getRequestUri(),
+                'request_payload'=> $payload,
+                'method'         => $request->method(),
+                'status_code'    => $statusCode,
+                'response_payload' => $responsePayload,
+                'ip'             => $request->ip(),
+                'user_agent'     => $request->userAgent(),
+                'frontend_page'  => $request->header('x-current-url'),
+            ];
+
+            PublishAuditLog::dispatch($logData);
+
+        } catch (\Exception $e) {
+            // Log a failure to dispatch, but don't break the user's request
+            Log::error('Failed to dispatch audit log job.', [
+                'error' => $e->getMessage()
+            ]);
+        }
     }
 }
