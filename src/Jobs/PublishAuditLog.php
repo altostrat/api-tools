@@ -2,14 +2,14 @@
 
 namespace Altostrat\Tools\Jobs;
 
+use Aws\Exception\AwsException;
+use Aws\Sns\SnsClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
-use Aws\Sns\SnsClient;
-use Aws\Exception\AwsException;
 use Tuupola\Ksuid;
 
 class PublishAuditLog implements ShouldQueue
@@ -38,27 +38,28 @@ class PublishAuditLog implements ShouldQueue
 
             if (empty($matches['key']) || empty($matches['secret']) || empty($matches['arn'])) {
                 Log::error('Invalid AUDIT_LOG_DSN format.', ['dsn' => $dsn]);
+
                 return;
             }
 
             // 2. Prepare the payload for the audit log service
-            $ksuid = new Ksuid();
+            $ksuid = new Ksuid;
             $payload = [
-                'log_id'         => 'log_' . $ksuid->string(),
-                'request_id'     => 'req_' . $ksuid->string(), // Generate a unique request ID
-                'org_id'         => $this->logData['org_id'],
-                'workspace_id'   => $this->logData['workspace_id'],
-                'user_id'        => $this->logData['user_id'],
-                'session_id'     => $this->logData['session_id'],
-                'email'          => $this->logData['email'] ?? null,
-                'name'           => $this->logData['name'] ?? null,
-                'event_time'     => now()->toISOString(),
-                'http_verb'      => $this->logData['method'],
-                'endpoint'       => $this->logData['uri'],
-                'status_code'    => $this->logData['status_code'],
-                'ip_address'     => $this->logData['ip'],
-                'user_agent'     => $this->logData['user_agent'],
-                'frontend_page'  => $this->logData['frontend_page'],
+                'log_id' => 'log_'.$ksuid->string(),
+                'request_id' => 'req_'.$ksuid->string(), // Generate a unique request ID
+                'org_id' => $this->logData['org_id'],
+                'workspace_id' => $this->logData['workspace_id'],
+                'user_id' => $this->logData['user_id'],
+                'session_id' => $this->logData['session_id'],
+                'email' => $this->logData['email'] ?? null,
+                'name' => $this->logData['name'] ?? null,
+                'event_time' => now()->toISOString(),
+                'http_verb' => $this->logData['method'],
+                'endpoint' => $this->logData['uri'],
+                'status_code' => $this->logData['status_code'],
+                'ip_address' => $this->logData['ip'],
+                'user_agent' => $this->logData['user_agent'],
+                'frontend_page' => $this->logData['frontend_page'],
                 'request_payload' => $this->logData['request_payload'],
                 'response_payload' => $this->logData['response_payload'],
             ];
@@ -66,9 +67,9 @@ class PublishAuditLog implements ShouldQueue
             // 3. Create SNS Client
             $snsClient = new SnsClient([
                 'version' => 'latest',
-                'region'  => explode(':', $matches['arn'])[3], // Extract region from ARN
+                'region' => explode(':', $matches['arn'])[3], // Extract region from ARN
                 'credentials' => [
-                    'key'    => $matches['key'],
+                    'key' => $matches['key'],
                     'secret' => $matches['secret'],
                 ],
             ]);
@@ -76,7 +77,7 @@ class PublishAuditLog implements ShouldQueue
             // 4. Publish to SNS
             $snsClient->publish([
                 'TopicArn' => $matches['arn'],
-                'Message'  => json_encode($payload),
+                'Message' => json_encode($payload),
             ]);
 
         } catch (AwsException $e) {

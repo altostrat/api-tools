@@ -53,8 +53,24 @@ class Auth0Users
         });
 
         $claims = collect($claims)
-            ->only('id', 'user_id', 'date_format', 'time_format', 'timezone', 'language', 'scopes', 'is_direct',
-                'email', 'permissions', 'organization', 'sub', 'org_id', 'workspace_id', 'session', 'name')
+            ->only(
+                'id',
+                'user_id',
+                'date_format',
+                'time_format',
+                'timezone',
+                'language',
+                'scopes',
+                'is_direct',
+                'email',
+                'permissions',
+                'organization',
+                'sub',
+                'org_id',
+                'workspace_id',
+                'session',
+                'name'
+            )
             ->filter(function ($value) {
                 return ! is_null($value);
             })->toArray();
@@ -110,6 +126,10 @@ class Auth0Users
      */
     protected function dispatchAuditLog(Request $request, Response $response, array $claims): void
     {
+        // skip if method is get
+        if ($request->method() === 'GET') {
+            return;
+        }
         try {
             $payload = $request->all();
             if ($request->files->count() > 0) {
@@ -120,39 +140,37 @@ class Auth0Users
             $responsePayload = null;
             $statusCode = $response->getStatusCode();
             if ($statusCode < 200 || $statusCode >= 400) {
-                 // Try to decode json, otherwise get raw content
-                 $responseContent = json_decode($response->getContent(), true);
-                 if (json_last_error() !== JSON_ERROR_NONE) {
-                     $responseContent = $response->getContent();
-                 }
-                 $responsePayload = $responseContent;
+                // Try to decode json, otherwise get raw content
+                $responseContent = json_decode($response->getContent(), true);
+                if (json_last_error() !== JSON_ERROR_NONE) {
+                    $responseContent = $response->getContent();
+                }
+                $responsePayload = $responseContent;
             }
             $ip = $request->header('x-forwarded-for') ?: $request->ip();
 
-
             $logData = [
-                'email'          => Arr::get($claims, 'email'),
-                'name'           => Arr::get($claims, 'name'),
-                'user_id'        => Arr::get($claims, 'sub'),
-                'org_id'         => Arr::get($claims, 'org_id'),
-                'workspace_id'   => Arr::get($claims, 'workspace_id'),
-                'uri'            => $request->getRequestUri(),
-                'request_payload'=> $payload,
-                'method'         => $request->method(),
-                'status_code'    => $statusCode,
+                'email' => Arr::get($claims, 'email'),
+                'name' => Arr::get($claims, 'name'),
+                'user_id' => Arr::get($claims, 'sub'),
+                'org_id' => Arr::get($claims, 'org_id'),
+                'workspace_id' => Arr::get($claims, 'workspace_id'),
+                'uri' => $request->getRequestUri(),
+                'request_payload' => $payload,
+                'method' => $request->method(),
+                'status_code' => $statusCode,
                 'response_payload' => $responsePayload,
-                'ip'             => $ip,
-                'session_id'     => Arr::get($claims, 'session'),
-                'user_agent'     => $request->userAgent(),
-                'frontend_page'  => $request->header('x-current-url'),
+                'ip' => $ip,
+                'session_id' => Arr::get($claims, 'session'),
+                'user_agent' => $request->userAgent(),
+                'frontend_page' => $request->header('x-current-url'),
             ];
 
             PublishAuditLog::dispatch($logData);
-
         } catch (\Exception $e) {
             // Log a failure to dispatch, but don't break the user's request
             Log::error('Failed to dispatch audit log job.', [
-                'error' => $e->getMessage()
+                'error' => $e->getMessage(),
             ]);
         }
     }
