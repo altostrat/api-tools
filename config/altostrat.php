@@ -8,6 +8,7 @@ return [
         'disabled' => env('ALTOSTRAT_LOGGING_DISABLED', false),
         'audit_log_dsn' => env('AUDIT_LOG_DSN', null),
     ],
+    'search_dsn' => env('SEARCH_DSN', null),
     'auth0' => [
         'legacy' => [
             'client_id' => env('AUTH0_LEGACY_CLIENT_ID'),
