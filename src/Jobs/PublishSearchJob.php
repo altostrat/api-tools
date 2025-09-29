@@ -2,6 +2,7 @@
 
 namespace Altostrat\Tools\Jobs;
 
+use Aws\Sns\SnsClient;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -40,7 +41,7 @@ class PublishSearchJob implements ShouldQueue
             }
 
             /** @var \Aws\Sns\SnsClient $snsClient */
-            $snsClient = app('aws')->createClient('sns', [
+            $snsClient = new SnsClient([
                 'version' => 'latest',
                 'region' => $parsed['region'],
                 'credentials' => [
