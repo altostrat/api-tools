@@ -4,6 +4,7 @@ namespace Altostrat\Tools;
 
 use Altostrat\Tools\Console\CheckInstallationCommand;
 use Altostrat\Tools\Console\CustomerModelCommand;
+use Altostrat\Tools\Console\SearchReindexCommand;
 use Altostrat\Tools\Http\Middleware\Auth0Users;
 use Altostrat\Tools\Http\Middleware\ForceJson;
 use Illuminate\Support\Facades\Route;
@@ -36,10 +37,8 @@ class AltostratServiceProvider extends ServiceProvider
 
     /**
      * Setup the configuration for Altostrat.
-     *
-     * @return void
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->mergeConfigFrom(
             __DIR__.'/../config/altostrat.php', 'altostrat'
@@ -86,6 +85,7 @@ class AltostratServiceProvider extends ServiceProvider
             $this->commands([
                 CustomerModelCommand::class,
                 CheckInstallationCommand::class,
+                SearchReindexCommand::class,
             ]);
         }
     }
