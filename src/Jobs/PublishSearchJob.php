@@ -56,11 +56,11 @@ class PublishSearchJob implements ShouldQueue
                 'Message' => json_encode($this->eventData),
             ]);
 
-            Log::info('Successfully published search event to SNS.', [
-                'topic_arn' => $parsed['arn'],
-                'event_type' => $this->eventData['event_type'],
-                'id' => $this->eventData['payload']['id'],
-            ]);
+            // Log::info('Successfully published search event to SNS.', [
+            //     'topic_arn' => $parsed['arn'],
+            //     'event_type' => $this->eventData['event_type'],
+            //     'id' => $this->eventData['payload']['id'],
+            // ]);
 
         } catch (\Exception $e) {
             Log::error('Failed to publish search event to SNS.', [
