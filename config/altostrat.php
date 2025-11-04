@@ -8,7 +8,6 @@ return [
         'disabled' => env('ALTOSTRAT_LOGGING_DISABLED', false),
         'audit_log_dsn' => env('AUDIT_LOG_DSN', null),
     ],
-    'search_dsn' => env('SEARCH_DSN', null),
     'auth0' => [
         'legacy' => [
             'client_id' => env('AUTH0_LEGACY_CLIENT_ID'),
@@ -24,5 +23,10 @@ return [
     'amplitude' => [
         'api_key' => env('AMPLITUDE_API_KEY'),
         'endpoint' => env('AMPLITUDE_ENDPOINT', 'https://api2.amplitude.com/2/httpapi'),
+    ],
+    'apikeys' => [
+        // The secure, shared token for authenticating with the internal API
+        'internal_auth_token' => env('ALTOSTRAT_INTERNAL_AUTH_TOKEN'),
+        'token_endpoint' => env('ALTOSTRAT_TOKEN_EXCHANGE_ENDPOINT', 'https://api.altostrat.io/api/internal/token'),
     ],
 ];
