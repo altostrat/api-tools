@@ -40,6 +40,15 @@ class Auth0Users
             return response()->json(['message' => 'Unauthorized or invalid token provided.'], 401);
         }
 
+        // If the caller authenticated with a static alto_sk_ key, the header
+        // still carries that raw key. Downstream services that forward this
+        // request's bearer token (e.g. developers-api proxying to v1.api,
+        // whose API-gateway JWT authorizer rejects non-JWTs) need the
+        // exchanged JWT instead.
+        if ($jwt !== $request->bearerToken()) {
+            $request->headers->set('Authorization', 'Bearer '.$jwt);
+        }
+
         try {
             $client = $this->getClient();
             $token = new Token($client, $jwt);
