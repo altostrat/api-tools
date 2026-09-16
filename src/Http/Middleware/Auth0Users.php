@@ -17,6 +17,16 @@ use Symfony\Component\HttpFoundation\Response;
 
 class Auth0Users
 {
+    /**
+     * Maximum time, in seconds, to cache a JWT exchanged from a static API key.
+     *
+     * This cache is keyed on the static key and lives in each consuming service,
+     * so the issuing service cannot reach it to invalidate it when a key is
+     * deleted or rotated. This cap is therefore the only thing bounding how long
+     * a revoked key keeps working - lower it to shorten that window.
+     */
+    protected const MAX_JWT_CACHE_TTL = 300;
+
     protected function getClient(bool $useLegacy = false): SdkConfiguration
     {
         $env = config('app.env');
@@ -160,9 +170,18 @@ class Auth0Users
                 return null;
             }
 
-            // Cache the encrypted token for its validity period minus a 60-second buffer.
-            $cacheTtl = max(60, $expiresIn - 60);
-            Cache::put($cacheKey, Crypt::encryptString($accessToken), $cacheTtl);
+            // Cache the encrypted token for its validity period minus a 60-second
+            // buffer, capped at MAX_JWT_CACHE_TTL so a revoked key cannot keep
+            // working for the full lifetime of an already-minted token.
+            //
+            // Note this is a cap, not a fixed TTL: when the issuer reports that
+            // little life is left we must cache for less, or not at all, rather
+            // than serving a JWT that expires before the cache entry does.
+            $cacheTtl = min(self::MAX_JWT_CACHE_TTL, $expiresIn - 60);
+
+            if ($cacheTtl > 0) {
+                Cache::put($cacheKey, Crypt::encryptString($accessToken), $cacheTtl);
+            }
 
             return $accessToken;
 
